@@ -5,6 +5,8 @@ declare global {
   namespace Express {
     interface Request {
       itemList: Lista;
+      foundListIndex: number;
+      foundDataIndex: number;
     }
   }
 }

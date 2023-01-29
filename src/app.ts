@@ -7,22 +7,35 @@ import {
   deleteList,
   updateList,
 } from "./logica";
-
-import { validateRequiredAttributes } from "./middlewares/validate";
-import { getListaById } from "./middlewares/getListaById";
+import {
+  ensureListExists,
+  ensureNameEspecifcExists,
+  validateBodyMiddleware,
+} from "./middlewares";
 
 const app: Application = express();
 app.use(express.json());
 
-app.post("/purchaseList", validateRequiredAttributes, createList);
+app.post("/purchaseList", validateBodyMiddleware, createList);
+
 app.get("/purchaseList", readList);
-app.get("/purchaseList/:id", getListaById, readListId);
-app.delete("/purchaseList/:id/:name", getListaById, deleteSpecificItem);
-app.delete("/purchaseList/:id", deleteList);
+
+app.get("/purchaseList/:id", ensureListExists, readListId);
+
+app.delete(
+  "/purchaseList/:id/:name",
+  ensureListExists,
+  ensureNameEspecifcExists,
+  deleteSpecificItem
+);
+
+app.delete("/purchaseList/:id", ensureListExists, deleteList);
+
 app.patch(
   "/purchaseList/:id/:name",
-  validateRequiredAttributes,
-  getListaById,
+  validateBodyMiddleware,
+  ensureListExists,
+  ensureNameEspecifcExists,
   updateList
 );
 
